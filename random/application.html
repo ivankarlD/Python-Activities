@@ -1,0 +1,198 @@
+<!-- <?php 
+    $id;
+    if (isset($_GET["user_token"]))
+    {
+        $id = $_GET["user_token"];
+    }
+?> -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=\, initial-scale=1.0" />
+    <title>Skill</title>
+    <!--tailwind-->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <style>
+        main{
+            background-color: #F0F2F5;
+        }
+        .button{
+            background-color: #00B074;
+        }
+    </style>
+</head>
+<body>
+    <main id="disp_skill" class="h-screen p-7">
+        <div class="relative h-full">
+            <div class="mb-5 px-5 py-3 text-base bg-white rounded-lg shadow flex justify-between">
+                <p class="font-semibold text-[#00B074] text-base flex items-center">Application</p>
+                <button onclick="toggleAddPanel()" class="bg-[#00B074] text-white rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>                  
+                </button>
+            </div>
+            
+            <div id='listContainer' class="">
+                <!--List-->
+            </div>            
+        </div>
+    </main>
+</body>
+</html>
+
+<script>
+    addForm = document.getElementById("addForm")
+    addPanel = document.getElementById("addPanel")
+    cancelBtn = document.getElementById("cancelBtn")
+    skillInput = document.getElementById("skill")
+    proInput = document.getElementById("pro")
+     idInput = document.getElementById("id")
+    alertCon = document.getElementById("alert")
+    submitBtn = document.getElementById("submitBtn");
+    
+    
+    function prepUpdatePanel(skill, pro, id){
+        addPanel.classList.remove("hidden")
+        AlertPop("hide")
+        skillInput.value = skill
+        proInput.value = pro
+        idInput.value = id
+        submitBtn.textContent = "Save";
+    }
+    
+    function toggleAddPanel(){
+        addPanel.classList.toggle("hidden")
+        AlertPop("hide")
+        addForm.reset();
+        submitBtn.textContent = "Add";
+    }
+
+    window.onload = GetAll();
+
+    function GetAll() {
+        // var $_GET = <?php echo json_encode($_GET); ?>;
+        // var id = $_GET.user_token;
+        $.ajax({
+            url: "../../mobileAPI/Functions/getskill.function.php", //php file
+            type: "POST", //method
+            data: {userID : id},
+            beforeSend: function () {
+                AlertPop("loading", "Loading...")
+            },
+            success: function (rs) {
+                // console.log(rs)
+                document.getElementById("listContainer").innerHTML = rs;                
+            },
+            async: true,
+            error: function (e) {
+                console.log(e);
+            },
+            cache: false,
+        });        
+        
+    }
+
+    addForm.addEventListener("submit", function(e){
+        e.preventDefault();
+
+        if (skillInput.value === "" || proInput.value === "" || idInput.value ==="") {
+            AlertPop("error", "All fields are required")
+            return;
+        }
+        
+        var url = "";
+        
+        if (submitBtn.textContent == "Add")
+        {
+            url = "../../mobileAPI/Functions/skill.function.php"
+        }
+        else if (submitBtn.textContent == "Save")
+        {
+            url = "../../mobileAPI/Functions/updateskill.function.php"
+        }
+        else
+        {
+            alert("Invalid Url");
+            return
+        }
+        
+        $.ajax({
+            url: url, //php file
+            type: "POST", //method
+            data: { skill : skillInput.value, pro : proInput.value, id : idInput.value, },
+            beforeSend: function () {
+                AlertPop("loading", "Loading...")
+            },
+            success: function (rs) {
+                // console.log(rs)
+                rs = JSON.parse(rs);
+                AlertPop(rs.status, rs.message);
+                setTimeout( function(){toggleAddPanel(),GetAll()},1000);
+            },
+            async: true,
+            error: function (e) {
+                console.log(e);
+            },
+            cache: false,
+        });        
+    })
+    
+    function Delete(id)
+    {
+        $.ajax({
+            url: "../../mobileAPI/Functions/deleteskill.function.php", //php file
+            type: "POST", //method
+            data: { id : id },
+            beforeSend: function () {
+                AlertPop("loading", "Loading...")
+            },
+            success: function (rs) {
+                GetAll()
+            },
+            async: true,
+            error: function (e) {
+                console.log(e);
+            },
+            cache: false,
+        });            
+    }
+    
+    function AlertPop(action, text)
+    {
+        alertCon.classList.remove("bg-green-300")
+        alertCon.classList.remove("bg-blue-300")
+        alertCon.classList.remove("bg-red-300")
+        switch(action) {
+          case "error":
+            alertCon.classList.remove("bg-green-300")
+            alertCon.classList.remove("bg-blue-300")
+            alertCon.classList.add("bg-red-300")
+            alertCon.classList.remove("hidden")
+            break;
+          case "success":
+            alertCon.classList.remove("bg-blue-300")
+            alertCon.classList.remove("bg-red-300")
+            alertCon.classList.add("bg-green-300")
+            alertCon.classList.remove("hidden")
+            break;
+          case "loading":
+            alertCon.classList.remove("bg-green-300")
+            alertCon.classList.remove("bg-red-300")
+            alertCon.classList.add("bg-blue-300")
+            alertCon.classList.remove("hidden")
+            break;
+          default:
+            alertCon.classList.remove("bg-green-300")
+            alertCon.classList.remove("bg-blue-300")
+            alertCon.classList.remove("bg-red-300")
+            alertCon.classList.add("hidden")
+        }
+            alertCon.textContent = text
+    }
+</script>

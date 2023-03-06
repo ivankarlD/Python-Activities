@@ -1,0 +1,87 @@
+<!-- <?php 
+    $id;
+    if (isset($_GET["user_token"]))
+    {
+        $id = $_GET["user_token"];
+    }
+?> -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=\, initial-scale=1.0" />
+    <title>Profile Setting</title>
+    <!--tailwind-->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <style>
+        main{
+            background-color: #F0F2F5;
+        }
+        .button{
+            background-color: #00B074;
+        }
+    </style>
+</head>
+<body>
+    <main id="disp_skill" class="h-screen p-5">
+        <div class="relative h-full bg-white rounded-lg">
+            <div class="flex h-[170px] justify-center items-center border-b-2 border-[#00B074]">
+                <div class="relative">
+                    <div id="imageContainer" class="h-[100px] w-[100px] bg-cover bg-center object-cover rounded-xl shadow" style="background-image: url('prob1_output.jpg')"></div>
+                    <button id="selectImageBtn" class="absolute h-7 w-7 -bottom-2 -right-2 flex justify-center items-center text-white rounded-full bg-[#00B074]">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
+                        </svg>
+                    </button>
+
+                    <form hidden id="imageForm" name="" action="" method="post"  enctype="multipart/form-data">
+                        <input id="userID" name="userID" value="<?php echo $id ?>">
+                        <input id="imageInput" accept="jpg/jpeg" name="image" type="file">
+                    </form>
+
+                </div>
+            </div>
+            <div class="p-5">
+                <form action="">
+                    <div class="mb-3">
+                        <label class="p-1 text-sm font-semibold" for="">Firstname</label>
+                        <input name="" id="" class="bg-white border-b-2 border-gray-300 p-2.5 text-sm w-full" type="text" value="" placeholder="Firstname">
+                    </div>
+                    <div class="mb-3">
+                        <label class="p-1 text-sm font-semibold" for="">Middlename</label>
+                        <input name="" id="" class="bg-white border-b-2 border-gray-300 p-2.5 text-sm w-full" type="text" value="" placeholder="Middlename">
+                    </div>
+                    <div class="mb-3">
+                        <label class="p-1 text-sm font-semibold" for="">Lastname</label>
+                        <input name="" id="" class="bg-white border-b-2 border-gray-300 p-2.5 text-sm w-full" type="text" value="" placeholder="Lastname">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+
+<script>
+   selectImageBtn = document.getElementById("selectImageBtn")
+   imageInput = document.getElementById("imageInput")
+   imageContainer = document.getElementById("imageContainer")
+
+    imageInput.addEventListener("change", function(){
+        if (this.value == "") return
+        const reader = new FileReader();
+        reader.onload = function() {
+            imageContainer.style.backgroundImage = `url(${reader.result})`;
+        };
+        reader.readAsDataURL(imageInput.files[0]);
+    })
+
+   selectImageBtn.addEventListener("click", function(){
+    imageInput.click();
+   })
+</script>
